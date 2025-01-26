@@ -1,2 +1,4 @@
-/.zig-cache
-/zig-out
+/.vscode
+/build
+/PlayingWithFire.exe
+secret.odin
