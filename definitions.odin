@@ -6,20 +6,36 @@ import rl "vendor:raylib"
 
 Vec2 :: [2]i32
 
-// Returns true if the mouse is hovering over the given rectangle, start being it's top-left corner
-is_mouse_hovering_over :: proc(mouse_pos, start, size: Vec2) -> bool {
-    return mouse_pos.x >= start.x && mouse_pos.x < start.x + size.x && 
-           mouse_pos.y >= start.y && mouse_pos.y < start.y + size.y
-}
-
 // Generates random boolean
 random_bool :: proc(gen := context.random_generator) -> bool {
-    return rand.uint32(gen) % 2 == 0
+	return rand.uint32(gen) % 2 == 0
+}
+
+// Returns true if the mouse is hovering over the given rectangle, start being it's top-left corner
+is_mouse_hovering_over :: proc(mouse_pos, start, size: Vec2) -> bool {
+	return(
+		mouse_pos.x >= start.x &&
+		mouse_pos.x < start.x + size.x &&
+		mouse_pos.y >= start.y &&
+		mouse_pos.y < start.y + size.y \
+	)
+}
+
+// Generates a wall grid
+generate_wall_grid :: proc() {
+	for y in 0 ..< GRID_SIZE.y {
+		for x in 0 ..< GRID_SIZE.x {
+			wall_grid[y][x] =
+				(y % (GRID_SIZE.y - 1) == 0 ||
+					x % (GRID_SIZE.x - 1) == 0 ||
+					(x % 2 == 0 && y % 2 == 0))
+		}
+	}
 }
 
 // Randomly place barrels on the grid, avoiding walls and player spawns
 // TODO: Only avoid occupied player spawns
-spawn_barrels :: proc() {
+generate_barrel_grid :: proc() {
 	for y in 0 ..< GRID_SIZE.y {
 		for x in 0 ..< GRID_SIZE.x {
 			barrel_grid[y][x] = !wall_grid[y][x] && (random_bool() || random_bool())
